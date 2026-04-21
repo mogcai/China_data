@@ -27,7 +27,7 @@ jobs:
 
     - name: Run crawler
       run: |
-        python scrpe_mocom.py  # 換成你嘅檔名
+        python scrape_mocom.py  # 換成你嘅檔名
     
 
     - name: Commit and Push if XML changed
