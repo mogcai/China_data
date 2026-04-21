@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 now=pd.Timestamp.now().replace(day=1).strftime('%Y-%m-%d')
 
 # %%
-date_range = pd.date_range(end=now, periods=4, freq='ME')
+date_range = pd.date_range(end=now, periods=3, freq='ME')
 date_range_str=[int(i.strftime('%Y%m')) for i in date_range]
 
 # %%
@@ -48,14 +48,15 @@ def get_china_trade_by_country(date):
 dfs=[get_china_trade_by_country(i) for i in date_range_str]
 
 # %%
-df=pd.concat(dfs)
-df['updated_at'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
-
-# %%
-db_file_name=r'china_mocom.db'
-db_table_name = r'by_country'
-unique_keys = ['trade_date', 'type']
-engine = create_engine(f'sqlite:///{db_file_name}')
-
-# create_db(engine, db_table_name, df, unique_keys)
-create_update_db(engine, db_table_name, df, unique_keys)
+if dfs:
+    df=pd.concat(dfs)
+    df['updated_at'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # %%
+    db_file_name=r'china_mocom.db'
+    db_table_name = r'by_country'
+    unique_keys = ['trade_date', 'type']
+    engine = create_engine(f'sqlite:///{db_file_name}')
+    
+    # create_db(engine, db_table_name, df, unique_keys)
+    create_update_db(engine, db_table_name, df, unique_keys)
