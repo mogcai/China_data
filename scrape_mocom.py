@@ -7,10 +7,19 @@ import time
 import sqlite3
 from update_db_func import *
 from sqlalchemy import create_engine
+import logging
+
+# 基本設定
+logging.basicConfig(
+    level=logging.INFO, # 設定顯示邊個等級以上嘅訊息
+    format='%(asctime)s - %(levelname)s - %(message)s', # 設定格式：時間 - 等級 - 內容
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 # %%
 now=pd.Timestamp.now().replace(day=1).strftime('%Y-%m-%d')
 
+logging.info(f"日期: {now}, 程式開始執行喇...")
 # %%
 date_range = pd.date_range(end=now, periods=3, freq='ME')
 date_range_str=[int(i.strftime('%Y%m')) for i in date_range]
@@ -38,10 +47,12 @@ def get_china_trade_by_country(date):
     response = s.post(url, headers=headers, data=playload)
     time.sleep(5)
     if response.status_code==200:
+        logging.info(f"連線成功。爬取數據日期: {date}")
         data=response.json()['rows']
         df=pd.DataFrame(data)
         return df
     else:
+        logging.error(f"連線失敗。爬取數據日期: {date}")
         return pd.DataFrame()
 
 # %%
@@ -49,6 +60,7 @@ dfs=[get_china_trade_by_country(i) for i in date_range_str]
 
 # %%
 if dfs:
+    logging.info(f"有數據。爬取數據日期: {", ".join(date_range_str)}")
     df=pd.concat(dfs)
     df['updated_at'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
     
@@ -60,3 +72,6 @@ if dfs:
     
     # create_db(engine, db_table_name, df, unique_keys)
     create_update_db(engine, db_table_name, df, unique_keys)
+
+else:
+    logging.warning(f"沒有數據。爬取數據日期: {", ".join(date_range_str)}")
