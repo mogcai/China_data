@@ -103,4 +103,5 @@ if dfs:
         logging.error(f"💀 更新數據庫時崩潰: {e}")
 
 else:
-    logging.warning(f"沒有數據。爬取數據日期: {", ".join(date_range_str)}")
+    all_dates_txt = ", ".join(map(str, date_range_str))
+    logging.warning(f"沒有數據。爬取數據日期: {all_dates_txt}")
