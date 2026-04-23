@@ -6,7 +6,7 @@ import pandas as pd
 import time
 import sqlite3
 from update_db_func import *
-from sqlalchemy import crreate_engine
+from sqlalchemy import create_engine
 import logging
 
 # 基本設定
