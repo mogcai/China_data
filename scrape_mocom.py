@@ -38,7 +38,7 @@ class TLSAdapter(HTTPAdapter):
         kwargs['ssl_context'] = context
         return super(TLSAdapter, self).init_poolmanager(*args, **kwargs)
 
-def get_china_trade_by_country(date):
+def get_china_trade_by_country(date: int) -> pd.DataFrame:
     logging.info(f"正在爬取日期: {date} ...")
     s = requests.Session()
     s.mount('https://', TLSAdapter())
